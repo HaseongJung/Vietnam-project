@@ -91,8 +91,49 @@ def buildDataset(dataset, pages: list):
         html = response.text
         soup = BeautifulSoup(html, "html.parser")
 
+        # url
+        url = restaurant_page;    print(f'URL: {url}')
+        
+        # Using selenium
+        driver.get(url)
+
+        #  time
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'NehmB')))
+            time.sleep(3)
+            element = driver.find_element(By.CLASS_NAME, 'NehmB')
+            element.click()
+
+            time_list = [] 
+            WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "RiEuX.f")))
+            time_elements = driver.find_elements(By.CLASS_NAME, "RiEuX.f")
+            for time_element in time_elements:
+                time_list.append(time_element.text.replace('\n', ':'))
+        except:
+            time_list = np.NaN
+        print(f'Times: {time_list}')
+
+        # description
+        try:
+            WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.LINK_TEXT, "View all details")))
+            element = driver.find_element(By.LINK_TEXT, "View all details")
+            element.click()
+            WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "#BODY_BLOCK_JQUERY_REFLOW > div.VZmgo.D.X0.X1.Za > div > div.TocEc._Z.S2.H2._f > div > div > div.kwVln > div > div:nth-child(1) > div > div.jmnaM")))
+            element = driver.find_element(By.CSS_SELECTOR, "#BODY_BLOCK_JQUERY_REFLOW > div.VZmgo.D.X0.X1.Za > div > div.TocEc._Z.S2.H2._f > div > div > div.kwVln > div > div:nth-child(1) > div > div.jmnaM")
+            description = element.text
+        except:
+            description = np.NaN
+        print(f'Description: {description}\n')
+
         # name 
-        name = soup.find('h1', class_="HjBfq").text;    print(f'Name: {name}')
+        try:
+            name = soup.find('h1', class_="HjBfq").text;    print(f'Name: {name}')
+        except:
+            name = np.NaN
 
         # category
         category = ''
@@ -106,11 +147,11 @@ def buildDataset(dataset, pages: list):
         adress = soup.find_all('a', class_="AYHFM")[1].text;   print(f'Adress: {adress}')
 
         # rating
-        rating = soup.find('span', class_="ZDEqb").text;    print(f'Rating: {rating}')
-
-
-        # url
-        url = restaurant_page;    print(f'URL: {url}')
+        try:
+            rating = soup.find('span', class_="ZDEqb").text;    print(f'Rating: {rating}')
+        # rating = soup.select_one("#component_52 > div.hILIJ > div > div:nth-child(1) > div > div:nth-child(1) > div.QEQvp > span.ZDEqb"); print(f'Rating: {rating}')
+        except:
+            rating = np.NaN
 
         # price
         try:
@@ -144,44 +185,8 @@ def buildDataset(dataset, pages: list):
         print(f'Reviews: {len(review_list)}')
 
 
-        # Using selenium
-        driver.get(url)
-
-        # # time
-        # openingTime = soup.find('span', class_="mMkhr").text[11:19];    
-        # closingTime = soup.find('span', class_="mMkhr").text[22:30];   
-        # print(f'OpeningTime: {openingTime}, ClosingTime: {closingTime}')
-        try:
-            WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#component_50 > div > div:nth-child(3) > span.DsyBj.YTODE > div > span.mMkhr")))
-            element = driver.find_element(By.CSS_SELECTOR, "#component_50 > div > div:nth-child(3) > span.DsyBj.YTODE > div > span.mMkhr")
-            time.sleep(1)
-            element.click() 
-        except:
-            times = np.NaN
-
-        time_list = [] 
-        time_elements = driver.find_elements(By.CLASS_NAME, "RiEuX.f")
-        for time_element in time_elements:
-            time_list.append(time_element.text.replace('\n', ':'))
-        print(f'Times: {time_list}')
-
-        # description
-        try:
-            WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#component_52 > div.hILIJ > div > div:nth-child(2) > div > div > div.gmbZC > a")))
-            element = driver.find_element(By.CSS_SELECTOR, "#component_52 > div.hILIJ > div > div:nth-child(2) > div > div > div.gmbZC > a")
-            element.click()
-            WebDriverWait(driver, 3).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#BODY_BLOCK_JQUERY_REFLOW > div.VZmgo.D.X0.X1.Za > div > div.TocEc._Z.S2.H2._f > div > div > div.kwVln > div > div:nth-child(1) > div > div.jmnaM")))
-            element = driver.find_element(By.CSS_SELECTOR, "#BODY_BLOCK_JQUERY_REFLOW > div.VZmgo.D.X0.X1.Za > div > div.TocEc._Z.S2.H2._f > div > div > div.kwVln > div > div:nth-child(1) > div > div.jmnaM")
-            description = element.text
-            print(description)
-        except:
-            description = np.NaN
-        print(f'Description: {description}\n')
         
-        time.sleep(rd.uniform(1, 2))
+        time.sleep(rd.uniform(0.5, 1.5))
 
         dataset.loc[cnt] = [name, category, description, time_list, url, priceLow, priceHigh, review_list, adress, rating]
         cnt += 1
