@@ -108,11 +108,8 @@ def buildDataset(dataset, pages: list):
         # rating
         rating = soup.find('span', class_="ZDEqb").text;    print(f'Rating: {rating}')
 
-        # time
-        openingTime = soup.find('span', class_="mMkhr").text[11:19];    
-        closingTime = soup.find('span', class_="mMkhr").text[22:30];   
-        print(f'OpeningTime: {openingTime}, ClosingTime: {closingTime}')
 
+        # url
         url = restaurant_page;    print(f'URL: {url}')
 
         # price
@@ -127,7 +124,7 @@ def buildDataset(dataset, pages: list):
         total_reviews = int(soup.find_all('span', class_="count")[0].text[1:-1].replace(',', ''));    print(f'Total_reviews: {total_reviews}')
         review_pages = total_reviews//15 if total_reviews%15 == 0 else total_reviews//15 + 1;    print(f'Review pages: {review_pages}')
         review_list = []
-        for i in tqdm(range(1, review_pages), desc='Review crwaling...'):
+        for i in tqdm(range(0, review_pages), desc='Review crwaling...'):
             if i > 1:
                 url_list = url.split('-Reviews-')
                 current_url = url_list[0] + f'-Reviews-or{15*i}-' + url_list[1]
@@ -146,8 +143,30 @@ def buildDataset(dataset, pages: list):
             time.sleep(rd.uniform(0.1, 0.5))
         print(f'Reviews: {len(review_list)}')
 
-        # description
+
+        # Using selenium
         driver.get(url)
+
+        # # time
+        # openingTime = soup.find('span', class_="mMkhr").text[11:19];    
+        # closingTime = soup.find('span', class_="mMkhr").text[22:30];   
+        # print(f'OpeningTime: {openingTime}, ClosingTime: {closingTime}')
+        try:
+            WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "#component_50 > div > div:nth-child(3) > span.DsyBj.YTODE > div > span.mMkhr")))
+            element = driver.find_element(By.CSS_SELECTOR, "#component_50 > div > div:nth-child(3) > span.DsyBj.YTODE > div > span.mMkhr")
+            time.sleep(1)
+            element.click() 
+        except:
+            times = np.NaN
+
+        time_list = [] 
+        time_elements = driver.find_elements(By.CLASS_NAME, "RiEuX.f")
+        for time_element in time_elements:
+            time_list.append(time_element.text.replace('\n', ':'))
+        print(f'Times: {time_list}')
+
+        # description
         try:
             WebDriverWait(driver, 5).until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, "#component_52 > div.hILIJ > div > div:nth-child(2) > div > div > div.gmbZC > a")))
@@ -164,7 +183,7 @@ def buildDataset(dataset, pages: list):
         
         time.sleep(rd.uniform(1, 2))
 
-        dataset.loc[cnt] = [name, category, description, openingTime, closingTime, url, priceLow, priceHigh, review_list, adress, rating]
+        dataset.loc[cnt] = [name, category, description, time_list, url, priceLow, priceHigh, review_list, adress, rating]
         cnt += 1
         
         
