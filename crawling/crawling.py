@@ -57,8 +57,7 @@ def createDataset():
         "name": [],
         "category": [],
         "description": [],
-        "opneingTime": [],
-        "closingTime": [],
+        "time": [],
         "URL": [],
         "priceLow": [],
         "priceHigh": [],
@@ -68,7 +67,7 @@ def createDataset():
     })
     
     return dataset
-
+    
 def setWebdriver():
     options = Options()
     options.add_argument('user-agent=' + user_agent)
@@ -101,7 +100,7 @@ def buildDataset(dataset, pages: list):
         try:
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, 'NehmB')))
-            time.sleep(3)
+            time.sleep(5)
             element = driver.find_element(By.CLASS_NAME, 'NehmB')
             element.click()
 
@@ -136,15 +135,21 @@ def buildDataset(dataset, pages: list):
             name = np.NaN
 
         # category
-        category = ''
-        for x in soup.find('span', class_="DsyBj DxyfE"):
-            if '$' not in x.text:
-                category += f'{x.text}, '
-        category = category[:-2]
+        try:
+            category = ''
+            for x in soup.find('span', class_="DsyBj DxyfE"):
+                if '$' not in x.text:
+                    category += f'{x.text}, '
+            category = category[:-2]
+        except:
+            category = np.NaN
         print(f'Category: {category}')
 
         # adress
-        adress = soup.find_all('a', class_="AYHFM")[1].text;   print(f'Adress: {adress}')
+        try:
+            adress = soup.find_all('a', class_="AYHFM")[1].text;   print(f'Adress: {adress}')
+        except:
+            adress = np.NaN
 
         # rating
         try:
@@ -162,27 +167,30 @@ def buildDataset(dataset, pages: list):
         print (f'PriceLow: {priceLow}, PriceHigh: {priceHigh}')
 
         # reviews, only english reviews
-        total_reviews = int(soup.find_all('span', class_="count")[0].text[1:-1].replace(',', ''));    print(f'Total_reviews: {total_reviews}')
-        review_pages = total_reviews//15 if total_reviews%15 == 0 else total_reviews//15 + 1;    print(f'Review pages: {review_pages}')
-        review_list = []
-        for i in tqdm(range(0, review_pages), desc='Review crwaling...'):
-            if i > 1:
-                url_list = url.split('-Reviews-')
-                current_url = url_list[0] + f'-Reviews-or{15*i}-' + url_list[1]
-                # print(f'current_url: {current_url}')
-                response = requests.get(current_url, headers=headers)
-                response.raise_for_status()
-                html = response.text
-                soup = BeautifulSoup(html, "html.parser") 
+        try:
+            total_reviews = int(soup.find_all('span', class_="count")[0].text[1:-1].replace(',', ''));    print(f'Total_reviews: {total_reviews}')
+            review_pages = total_reviews//15 if total_reviews%15 == 0 else total_reviews//15 + 1;    print(f'Review pages: {review_pages}')
+            review_list = []
+            for i in tqdm(range(0, review_pages), desc='Review crwaling...'):
+                if i > 1:
+                    url_list = url.split('-Reviews-')
+                    current_url = url_list[0] + f'-Reviews-or{15*i}-' + url_list[1]
+                    # print(f'current_url: {current_url}')
+                    response = requests.get(current_url, headers=headers)
+                    response.raise_for_status()
+                    html = response.text
+                    soup = BeautifulSoup(html, "html.parser") 
 
-            reviews = soup.find_all('p', class_="partial_entry");
-            for review in reviews:
-                review_list.append(review.text)
-            #     print(review.text)
-            # print(f'Reviews: {len(review_list)}')
+                reviews = soup.find_all('p', class_="partial_entry");
+                for review in reviews:
+                    review_list.append(review.text)
+                #     print(review.text)
+                # print(f'Reviews: {len(review_list)}')
 
-            time.sleep(rd.uniform(0.1, 0.5))
-        print(f'Reviews: {len(review_list)}')
+                time.sleep(rd.uniform(0.1, 0.5))
+        except:
+            review_list = np.NaN
+        # print(f'Reviews: {len(review_list)}')
 
 
         
@@ -209,5 +217,5 @@ if __name__ == "__main__":
     dataset = buildDataset(dataset, restraurant_pages)
 
     # save dataset
-    dataset.to_csv('test.csv')
+    dataset.to_csv('dataset.csv')
     print(f'Dataset build complete!\n{dataset}')
