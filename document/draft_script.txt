@@ -1,0 +1,58 @@
+This is the VisitViet team that developed Da Nang's restaurant recommendation website.
+First of all, the table of contents is
+It consists of project overview, project details, project demonstration, and progress.
+
+This is a project overview.
+During the COVID-19 period, the number of Vietnamese tourists has decreased rapidly, but has recently increased sharply again.
+This year alone, 11.2 million tourists visited Vietnam.
+Among them, Koreans account for the largest portion with 3.2 million.
+You can see that there are so many Vietnamese tourists, including Koreans.
+
+With the development of the Internet and the travel industry, there is a lot of information on overseas restaurants provided by various platforms, including SNS.
+But sometimes, too much information makes it difficult for us to judge.
+
+Therefore, we decided to recommend restaurants customized to individuals.
+
+This is the project details.
+First, if you look at the system structure diagram, there are membership registration and login functions
+Home, Favorite, Schedule, and Setting There are four pages in total and the functions of that page.
+We will take a closer look at these functions later.
+
+This is a youth case diagram.
+The user signs up and logs in
+You can recommend restaurants in two ways, user-based and content-based, and inquire about information about them.
+If you like that restaurant, you can add, inquire, and delete your favorite restaurant, and you can also add, inquire, and delete schedules.
+
+Let me show you the website screen.
+The main page provides top 10 restaurants and user-based recommended restaurants.
+This is a catalog page, which provides restaurants in various categories.
+This is the restaurant page. It provides photos of the restaurant, its name, rating, address, price point, business hours, and has likes, schedule additions, and rating functions.
+Below, similar restaurants are recommended as a content-based recommendation system.
+This is the Favorite page. You can look up the restaurants that you like.
+This is the Schedule page. You can look up and delete my schedules that you added.
+This is the Setting page. I planned to offer it all for English, Korean, and Vietnamese, but now it's only available for Vietnamese.
+
+It's an ER diagram.
+The database consists of a total of nine attributes: Provider, Country, Type, Restaurant, Favorite, Rating, Image, Schedule, and User.
+
+Datasets were collected by crawling from TripAdvisor.
+It consists of restaurants' names, categories, introductions, business hours, URLs, prices, reviews, addresses, ratings, phone numbers, and photos.
+
+A user-based recommendation system is to find a group of similar tastes and recommend items that users in the group they belong to have a good reputation for.
+First, we created a user-item matrix and obtained the similarity between all users through cosine similarity.
+In addition, we extracted the similarity between the target and the users, calculated the expected evaluation value for items that the target did not evaluate, and recommended those with higher values.
+
+The content-based recommendation method directly analyzes the content of the item and analyzes the similarity between the item and the item
+It is a method of selecting items with high similarity values and recommending items to customers based on them. 
+Among the attributes of the items we collected, we implemented a function that recommends similarity between restaurants by weighting the category, which is structural data, and the review, which is unstructured data, of 0.2 and 0.8, respectively.
+For the review, the TF-IDF was used as text data to extract keywords from each text, and then the similarity was calculated by comparing keywords between items using cosine similarity. 
+The result value for this was recommended as a related restaurant on the detailed page of one restaurant. 
+
+Then I'll show you the demo video.
+
+It's a process of progress.
+We made a project plan from 10.19 to 11.12 and collected data from 11.13 to 11.18.
+Since then, the recommended algorithm has been developed from 11.19 to 12.09, and the web has been developed and modified from 12.10 to 01.03
+The development environment is as follows.
+
+Thank you very much for your attention.
