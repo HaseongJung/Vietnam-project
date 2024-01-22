@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../app/helpers/slug.ts"],
+  "sourcesContent": ["// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app\\\\helpers\\\\slug.ts\"\n);\nimport.meta.hot.lastModified = \"1691072469000\";\n}\n// REMIX HMR END\n\ntype RestaurantSlugType = {\r\n  id: string;\r\n  countrySlug: string;\r\n  typeSlug: string;\r\n};\r\n\r\nexport const createRestaurantSlug = ({\r\n  countrySlug,\r\n  typeSlug,\r\n  id,\r\n}: RestaurantSlugType) => {\r\n  return `/${countrySlug}/${typeSlug}/${id}`;\r\n};\r\n"],
+  "mappings": ";;;;;AAEA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;AASO,IAAM,uBAAuB,CAAC;AAAA,EACnC;AAAA,EACA;AAAA,EACA;AACF,MAA0B;AACxB,SAAO,IAAI,eAAe,YAAY;AACxC;",
+  "names": []
+}

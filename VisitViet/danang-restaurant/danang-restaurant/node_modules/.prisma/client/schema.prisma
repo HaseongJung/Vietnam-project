@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String        @id @default(cuid())
+  username            String        @unique
+  passwordHash        String
+  role                Int           @default(0)
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  favorites           Favorite[]
+  ratings             Rating[]
+  schedule            Schedule[]
+}
+
+// Country table
+model Country {
+  countryId           String        @id @unique
+  slug                String
+
+  nameVie             String
+  nameKor             String
+  nameEng             String
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  // Add the opposite relation field for the Provider model
+  providers           Provider[]
+}
+
+// Type table
+model Type {
+  typeId              String        @id @unique
+  slug                String        @unique
+
+  nameVie             String
+  nameKor             String
+  nameEng             String
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  // Add the opposite relation field for the Provider model
+  providers           Provider[]
+}
+
+// QuocGiaLoai (CountryType) table to combine Country and Type
+model Provider {
+  countryId           String
+  typeId              String
+
+  // Set the pair of columns (countryId, typeId) as the primary key of the linking table
+  @@id([countryId, typeId])
+
+  // Relationship CountryType - Country
+  country             Country       @relation(fields: [countryId], references: [countryId], onDelete: Cascade, onUpdate: Cascade)
+
+  // Relationship CountryType - Type
+  type                Type          @relation(fields: [typeId], references: [typeId], onDelete: Cascade, onUpdate: Cascade)
+
+  restaurants         Restaurant[]
+}
+
+// Restaurant table
+model Restaurant {
+  id                  String        @id @default(cuid())
+
+  nameVie             String
+  descriptionVie      String?
+  addressVie          String
+
+  nameKor             String
+  descriptionKor      String?
+  addressKor          String
+
+  nameEng             String
+  descriptionEng      String?
+  addressEng          String
+
+  rating              Int?          @default(0)
+  openingTime         String?
+  closingTime         String?
+  direct              String?
+  priceLow            Float?
+  priceHigh           Float?
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  countryId           String
+  typeId              String
+  
+  // Relationship Restaurant - CountryType
+  countryType         Provider      @relation(fields: [countryId, typeId], references: [countryId, typeId], onDelete: Cascade, onUpdate: Cascade)
+  
+  images              Image[]
+  favorites           Favorite[]
+  ratings             Rating[]
+  schedule            Schedule[]
+}
+
+model Favorite {
+  id                  String        @id @default(cuid())
+  createdAt           DateTime      @default(now())
+
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  restaurantId        String
+  restaurant          Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+
+model Image {
+  id                  String        @id @default(cuid())
+  url                 String
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  restaurantId        String
+
+  restaurant          Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Rating {
+  id                  String        @id @default(cuid())
+  createdAt           DateTime      @default(now())
+
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  restaurantId        String
+  restaurant          Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ratingValue         Int           @default(0)
+}
+
+model Schedule {
+  id                  String        @id @default(cuid())
+  createdAt           DateTime      @default(now())
+
+  hour                DateTime?
+  dateTime            DateTime
+
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  restaurantId        String
+  restaurant          Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["slied.css"],
+  "sourcesContent": ["@media (max-width: 768px) {\n  .slick-prev,\n  .slick-next {\n    display: none !important;\n  }\n}\n\n.slick-dots {\n  position: absolute;\n  bottom: 10px; /* Thay đổi giá trị này tùy theo vị trí mong muốn của chấm */\n  opacity: 0;\n}\n"],
+  "mappings": ";AAAA;AACE;;AAEE;;;AAIJ;AACE;AACA;AACA;;",
+  "names": []
+}

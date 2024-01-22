@@ -1,0 +1,93 @@
+{
+  "name": "esbuild-plugins-node-modules-polyfill",
+  "version": "1.3.0",
+  "description": "Polyfills nodejs builtin modules and globals for the browser.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "@imranbarbhuiya",
+  "scripts": {
+    "lint": "eslint src --ext ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "update": "yarn upgrade-interactive",
+    "build": "tsup",
+    "bump": "cliff-jumper",
+    "check-update": "cliff-jumper --dry-run",
+    "prepack": "yarn build && pinst --disable",
+    "_postinstall": "husky install .github/husky",
+    "postpack": "pinst --enable",
+    "typecheck": "tsc -p tsconfig.eslint.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "esbuild-plugins",
+    "esbuild-plugins-node-modules-polyfill",
+    "node-modules-polyfill",
+    "esbuild",
+    "esbuild-plugin",
+    "polyfill",
+    "node-modules",
+    "node-polyfill"
+  ],
+  "dependencies": {
+    "@jspm/core": "^2.0.1",
+    "local-pkg": "^0.4.3",
+    "resolve.exports": "^2.0.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.6",
+    "@commitlint/config-conventional": "^17.6.6",
+    "@favware/cliff-jumper": "^2.1.1",
+    "@favware/npm-deprecate": "^1.0.7",
+    "cz-conventional-changelog": "^3.3.0",
+    "esbuild": "^0.18.13",
+    "eslint": "^8.45.0",
+    "eslint-config-mahir": "^0.0.29",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "pinst": "^3.0.0",
+    "prettier": "^3.0.0",
+    "tsup": "^7.1.0",
+    "typescript": "^5.1.6",
+    "vitest": "^0.33.0"
+  },
+  "peerDependencies": {
+    "esbuild": "^0.14.0 || ^0.15.0 || ^0.16.0 || ^0.17.0 || ^0.18.0"
+  },
+  "files": [
+    "dist/**/*.js*",
+    "dist/**/*.mjs*",
+    "dist/**/*.d*",
+    "globals/**/*.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imranbarbhuiya/esbuild-plugins-node-modules-polyfill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imranbarbhuiya/esbuild-plugins-node-modules-polyfill/issues"
+  },
+  "homepage": "https://github.com/imranbarbhuiya/esbuild-plugins-node-modules-polyfill#readme",
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{mjs,js,ts}": "eslint --fix --ext mjs,js,ts"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "resolutions": {
+    "ansi-regex": "^5.0.1",
+    "minimist": "^1.2.8"
+  },
+  "packageManager": "yarn@3.6.1",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

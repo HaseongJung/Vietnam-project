@@ -1,0 +1,12 @@
+@media (max-width: 768px) {
+  .slick-prev,
+  .slick-next {
+    display: none !important;
+  }
+}
+
+.slick-dots {
+  position: absolute;
+  bottom: 10px; /* Thay đổi giá trị này tùy theo vị trí mong muốn của chấm */
+  opacity: 0;
+}

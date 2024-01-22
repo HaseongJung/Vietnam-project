@@ -1,0 +1,13 @@
+/* css-side-effects-plugin-ns:app\assets\css\slied.css */
+@media (max-width: 768px) {
+  .slick-prev,
+  .slick-next {
+    display: none !important;
+  }
+}
+.slick-dots {
+  position: absolute;
+  bottom: 10px;
+  opacity: 0;
+}
+/*# sourceMappingURL=/build/routes/_index-NJB32PEN.css.map */

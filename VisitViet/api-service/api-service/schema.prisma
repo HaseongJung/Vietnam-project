@@ -1,0 +1,120 @@
+generator client {
+  provider             = "prisma-client-py"
+  recursive_type_depth = "5"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Country {
+  countryId String     @id @unique
+  slug      String
+  nameVie   String
+  nameKor   String
+  nameEng   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime
+  Provider  Provider[]
+}
+
+model Favorite {
+  id           String     @id
+  createdAt    DateTime   @default(now())
+  userId       String
+  restaurantId String
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Image {
+  id           String     @id
+  url          String
+  restaurantId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+}
+
+model Provider {
+  countryId  String
+  typeId     String
+  Type       Type         @relation(fields: [typeId], references: [typeId], onDelete: Cascade)
+  Country    Country      @relation(fields: [countryId], references: [countryId], onDelete: Cascade)
+  Restaurant Restaurant[]
+
+  @@id([countryId, typeId])
+}
+
+model Rating {
+  id           String     @id
+  createdAt    DateTime   @default(now())
+  userId       String
+  restaurantId String
+  ratingValue  Int        @default(0)
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Restaurant {
+  id             String     @id
+  nameVie        String
+  descriptionVie String?
+  addressVie     String
+  nameKor        String
+  descriptionKor String?
+  addressKor     String
+  nameEng        String
+  descriptionEng String?
+  addressEng     String
+  rating         Int?       @default(0)
+  openingTime    String?
+  closingTime    String?
+  direct         String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime
+  countryId      String
+  typeId         String
+  priceHigh      Float?
+  priceLow       Float?
+  Favorite       Favorite[]
+  Image          Image[]
+  Rating         Rating[]
+  Provider       Provider   @relation(fields: [countryId, typeId], references: [countryId, typeId], onDelete: Cascade)
+  Schedule       Schedule[]
+}
+
+model Schedule {
+  id           String     @id
+  createdAt    DateTime   @default(now())
+  hour         DateTime?
+  dateTime     DateTime
+  userId       String
+  restaurantId String
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  User         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Type {
+  typeId    String     @id @unique
+  slug      String     @unique
+  nameVie   String
+  nameKor   String
+  nameEng   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime
+  Provider  Provider[]
+}
+
+model User {
+  id           String     @id
+  username     String     @unique
+  passwordHash String
+  role         Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime
+  Favorite     Favorite[]
+  Rating       Rating[]
+  Schedule     Schedule[]
+}
